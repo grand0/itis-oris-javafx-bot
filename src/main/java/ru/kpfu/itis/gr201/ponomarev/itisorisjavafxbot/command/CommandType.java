@@ -19,9 +19,15 @@ public enum CommandType {
     ),
     CHAT(
             ChatCommand::new,
-            "Opens chat window.",
+            "Open chat window.",
             "/chat",
             "chat"
+    ),
+    HELP(
+            HelpCommand::new,
+            "Show info about commands.",
+            "/help",
+            "help"
     ),
     END(
             EndCommand::new,
