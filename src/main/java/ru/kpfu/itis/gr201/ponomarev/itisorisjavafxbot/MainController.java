@@ -6,6 +6,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import ru.kpfu.itis.gr201.ponomarev.itisorisjavafxbot.command.Command;
 import ru.kpfu.itis.gr201.ponomarev.itisorisjavafxbot.command.CommandFactory;
@@ -32,6 +33,8 @@ public class MainController {
         Platform.runLater(() -> {
             COMMAND_FACTORY.init((Stage) commandField.getScene().getWindow());
             commandField.requestFocus();
+            chatArea.setFont(Font.font("Consolas"));
+            commandField.setFont(Font.font("Consolas"));
         });
     }
 
