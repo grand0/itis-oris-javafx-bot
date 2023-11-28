@@ -34,14 +34,14 @@ public class ExchangeCommand extends AbstractCommand {
             currency = args[1].toUpperCase();
         }
         Map<String, Object> params = new HashMap<>();
+        LocalDate today = LocalDate.now();
         params.put("access_key", API_KEY);
         params.put("source", baseCurrency);
         params.put("currencies", currency);
         params.put("format", "1");
+        params.put("start_date", today.minusDays(6));
+        params.put("end_date", today);
         try {
-            LocalDate today = LocalDate.now();
-            params.put("start_date", today.minusDays(6));
-            params.put("end_date", today);
             String response = HTTP.get("http://api.currencylayer.com/timeframe", params);
             JSONObject json = new JSONObject(response);
             JSONObject quotes = json.getJSONObject("quotes");
@@ -51,9 +51,7 @@ public class ExchangeCommand extends AbstractCommand {
                 double value = quotes.getJSONObject(str).getDouble(baseCurrency + currency);
                 map.put(date, new ExchangeRate(baseCurrency, currency, value));
             }
-
             ExchangeRate exchangeRate = new ExchangeRate(baseCurrency, currency, quotes.getJSONObject(today.toString()).getDouble(baseCurrency + currency));
-
             return exchangeRate + "\n" + plot(map);
         } catch (IOException e) {
             throw new CommandExecutionException("Couldn't connect to API. Exception: " + e);
@@ -112,9 +110,7 @@ public class ExchangeCommand extends AbstractCommand {
         LocalDate maxDate = map.keySet().stream().max(LocalDate::compareTo).get();
 
         sb.append(minDate);
-        for (int i = 0; i < cols.length - minDate.toString().length() - maxDate.toString().length() - 1; i++) {
-            sb.append(" ");
-        }
+        sb.append(" ".repeat(Math.max(0, cols.length - minDate.toString().length() - maxDate.toString().length() - 1)));
         sb.append(maxDate);
 
         return sb.toString();
