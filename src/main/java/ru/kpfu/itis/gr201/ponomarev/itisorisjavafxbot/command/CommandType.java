@@ -29,6 +29,12 @@ public enum CommandType {
             "/help",
             "help"
     ),
+    GAME(
+            GameCommand::new,
+            "Open game.",
+            "/game",
+            "game"
+    ),
     END(
             EndCommand::new,
             "End session.",
