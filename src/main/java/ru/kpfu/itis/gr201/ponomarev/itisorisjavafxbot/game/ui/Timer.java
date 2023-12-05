@@ -1,23 +1,18 @@
 package ru.kpfu.itis.gr201.ponomarev.itisorisjavafxbot.game.ui;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.scene.text.Font;
+import javafx.animation.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import ru.kpfu.itis.gr201.ponomarev.itisorisjavafxbot.game.Config;
 
 public class Timer extends Text {
+
+    private Timeline emphasizeAnimation;
 
     private final Timeline timeline;
     private int secondsPassed;
     private Runnable callback;
 
     public Timer() {
-        setFont(Font.font("Consolas", 24));
-        setFill(Config.THEME.getTimer());
-
         timeline = new Timeline();
         KeyFrame kf = new KeyFrame(
                 Duration.seconds(1),
@@ -33,7 +28,15 @@ public class Timer extends Text {
     }
 
     private void redraw() {
-        setText(String.valueOf(secondsPassed));
+        setText(formattedTimePassed());
+    }
+
+    private String formattedTimePassed() {
+        return String.format(
+                "%02d:%02d",
+                secondsPassed / 60,
+                secondsPassed % 60
+        );
     }
 
     public void start() {
@@ -48,6 +51,40 @@ public class Timer extends Text {
         timeline.stop();
         secondsPassed = 0;
         redraw();
+    }
+
+    public void playEmphasizeAnimation() {
+        if (emphasizeAnimation == null) {
+            emphasizeAnimation = new Timeline();
+            KeyFrame kfScaleUp = new KeyFrame(
+                    new Duration(500),
+                    new KeyValue(
+                            scaleXProperty(),
+                            2,
+                            Interpolator.EASE_OUT
+                    ),
+                    new KeyValue(
+                            scaleYProperty(),
+                            2,
+                            Interpolator.EASE_OUT
+                    )
+            );
+            KeyFrame kfScaleDown = new KeyFrame(
+                    new Duration(1000),
+                    new KeyValue(
+                            scaleXProperty(),
+                            1,
+                            Interpolator.EASE_IN
+                    ),
+                    new KeyValue(
+                            scaleYProperty(),
+                            1,
+                            Interpolator.EASE_IN
+                    )
+            );
+            emphasizeAnimation.getKeyFrames().addAll(kfScaleUp, kfScaleDown);
+        }
+        emphasizeAnimation.playFromStart();
     }
 
     public int getSecondsPassed() {

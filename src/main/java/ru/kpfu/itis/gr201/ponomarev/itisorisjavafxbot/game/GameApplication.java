@@ -13,6 +13,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import ru.kpfu.itis.gr201.ponomarev.itisorisjavafxbot.game.ui.GameField;
@@ -30,6 +31,7 @@ public class GameApplication extends Application {
     private double playerSpeed;
     private Rectangle player;
     private Circle apple;
+    private Circle poisonedApple;
     private Set<KeyCode> pressedKeys;
     private Direction direction;
     private Timeline gameLoop;
@@ -40,17 +42,29 @@ public class GameApplication extends Application {
         primaryStage.setOnCloseRequest(event -> Platform.exit());
 
         timer = new Timer();
+        timer.setFont(Font.font("Consolas", 24));
+        timer.setFill(Config.THEME.getTimer());
         timer.setCallback(() -> {
+            if (timer.getSecondsPassed() % 10 == 0) {
+                if (poisonedApple == null) {
+                    poisonedApple = makePoisonedApple();
+                } else {
+                    poisonedApple = null;
+                }
+                gameField.replacePoisonedApple(poisonedApple);
+            }
             if (timer.getSecondsPassed() % 30 == 0) {
+                timer.playEmphasizeAnimation();
                 increaseSpeed();
             }
         });
         StackPane.setMargin(timer, new Insets(10));
-        StackPane.setAlignment(timer, Pos.TOP_RIGHT);
+        StackPane.setAlignment(timer, Pos.TOP_CENTER);
 
         points = new PointsCounter();
-        StackPane.setMargin(points, new Insets(10));
-        StackPane.setAlignment(points, Pos.TOP_LEFT);
+        points.setFont(Font.font("Consolas", 144));
+        points.setFill(Config.THEME.getTimer().deriveColor(0, 1, 1, 0.3));
+        StackPane.setAlignment(points, Pos.CENTER);
 
         player = makePlayer();
         gameField = new GameField(player);
@@ -86,7 +100,9 @@ public class GameApplication extends Application {
         player.setFill(Config.THEME.getPlayer());
 
         apple = makeApple();
+        poisonedApple = null;
         gameField.replaceApple(apple);
+        gameField.replacePoisonedApple(poisonedApple);
 
         points.reset();
 
@@ -116,8 +132,26 @@ public class GameApplication extends Application {
     }
 
     private Circle makeApple() {
-        Circle apple = new Circle(Math.random() * (Config.GAME.getWindowWidth() - 40) + 20, Math.random() * (Config.GAME.getWindowHeight() - 40) + 20, Config.GAME.getAppleSize() / 2.0);
+        Circle apple = generateApple();
         apple.setFill(Config.THEME.getApple());
+        return apple;
+    }
+
+    private Circle makePoisonedApple() {
+        Circle apple = generateApple();
+        apple.setFill(Config.THEME.getPoisonedApple());
+        return apple;
+    }
+
+    private Circle generateApple() {
+        Circle apple = new Circle(Math.random() * (Config.GAME.getWindowWidth() - 40) + 20,
+                Math.random() * (Config.GAME.getWindowHeight() - 40) + 20,
+                Config.GAME.getAppleSize() / 2.0);
+        while (Shape.intersect(player, apple).getBoundsInParent().getWidth() > 0) {
+            apple = new Circle(Math.random() * (Config.GAME.getWindowWidth() - 40) + 20,
+                    Math.random() * (Config.GAME.getWindowHeight() - 40) + 20,
+                    Config.GAME.getAppleSize() / 2.0);
+        }
         return apple;
     }
 
@@ -129,6 +163,10 @@ public class GameApplication extends Application {
                     || player.getY() < 0
                     || player.getX() + player.getWidth() > Config.GAME.getWindowWidth()
                     || player.getY() + player.getHeight() > Config.GAME.getWindowHeight()
+                    || (
+                            poisonedApple != null
+                            && Shape.intersect(player, poisonedApple).getBoundsInParent().getWidth() > 0
+                    )
             ) {
                 gameOver();
             }
