@@ -89,13 +89,13 @@ public class Config {
         public static final Color DEFAULT_BACKGROUND = Color.web("#FCF5ED");
         public static final Color DEFAULT_PLAYER = Color.web("#1F1717");
         public static final Color DEFAULT_APPLE = Color.web("#CE5A67");
-        public static final Color DEFAULT_TIMER = Color.web("#CE5A67");
+        public static final Color DEFAULT_COUNTER = Color.web("#CE5A67");
         public static final Color DEFAULT_POISONED_APPLE = DEFAULT_APPLE.darker().darker();
 
         private final Color background;
         private final Color player;
         private final Color apple;
-        private final Color timer;
+        private final Color counter;
         private final Color poisonedApple;
 
         public ThemeConfig() {
@@ -103,16 +103,16 @@ public class Config {
                     DEFAULT_BACKGROUND,
                     DEFAULT_PLAYER,
                     DEFAULT_APPLE,
-                    DEFAULT_TIMER,
+                    DEFAULT_COUNTER,
                     DEFAULT_POISONED_APPLE
             );
         }
 
-        public ThemeConfig(Color background, Color player, Color apple, Color timer, Color poisonedApple) {
+        public ThemeConfig(Color background, Color player, Color apple, Color counter, Color poisonedApple) {
             this.background = background;
             this.player = player;
             this.apple = apple;
-            this.timer = timer;
+            this.counter = counter;
             this.poisonedApple = poisonedApple;
         }
 
@@ -128,8 +128,8 @@ public class Config {
             return apple;
         }
 
-        public Color getTimer() {
-            return timer;
+        public Color getCounter() {
+            return counter;
         }
 
         public Color getPoisonedApple() {

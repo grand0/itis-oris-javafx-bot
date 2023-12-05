@@ -43,7 +43,7 @@ public class GameApplication extends Application {
 
         timer = new Timer();
         timer.setFont(Font.font("Consolas", 24));
-        timer.setFill(Config.THEME.getTimer());
+        timer.setFill(Config.THEME.getCounter());
         timer.setCallback(() -> {
             if (timer.getSecondsPassed() % 10 == 0) {
                 if (poisonedApple == null) {
@@ -63,7 +63,7 @@ public class GameApplication extends Application {
 
         points = new PointsCounter();
         points.setFont(Font.font("Consolas", 144));
-        points.setFill(Config.THEME.getTimer().deriveColor(0, 1, 1, 0.3));
+        points.setFill(Config.THEME.getCounter().deriveColor(0, 1, 1, 0.3));
         StackPane.setAlignment(points, Pos.CENTER);
 
         player = makePlayer();
