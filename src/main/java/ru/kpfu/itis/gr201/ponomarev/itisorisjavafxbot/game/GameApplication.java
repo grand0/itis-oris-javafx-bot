@@ -82,6 +82,7 @@ public class GameApplication extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
+        primaryStage.centerOnScreen();
         primaryStage.show();
 
         gameLoop = makeGameLoop();
